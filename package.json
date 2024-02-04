@@ -1,9 +1,9 @@
 {
-  "name": "nodejs-expressjs-mongodb-base-project",
+  "name": "trello-api",
   "private": true,
   "version": "1.0.0",
-  "author": "TrungQuanDev - Một Lập Trình Viên",
-  "description": "https://youtube.com/@trungquandev",
+  "author": "Bui-Thanh-Liem",
+  "description": "https://github.com/Bui-Thanh-Liem/trello-api",
   "engines": {
     "node": "18.16.0"
   },

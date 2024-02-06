@@ -1,5 +1,6 @@
-/**
- * Updated by trungquandev.com's author on August 17 2023
- * YouTube: https://youtube.com/@trungquandev
- * "A bit of fragrance clings to the hand that gives flowers!"
- */
+// Users
+// buithanhliem
+// kyi33BVzoIfvvbft
+
+const MONGODB_URI = 'mongodb+srv://buithanhliem:kyi33BVzoIfvvbft@cluster0-liemdev.dfynfof.mongodb.net/?retryWrites=true&w=majority';
+const DATABASE_NAME = 'trello-database';

@@ -1,31 +1,35 @@
 import express from 'express';
 
 //
-import { mapOrder } from '~/utils/sorts.js';
+import { connectDB, getDB, disconnectDB } from '~/config/mongodb';
+import { env } from '~/config/environment';
 
-const app = express();
-const hostname = 'localhost';
-const port = 3000;
+const startServer = () => {
+  const app = express();
+  app.get('/', async (req, res) => {
+    console.log(env.AUTHOR);
+    res.end('<h1>Hello World!</h1><hr>');
+  });
+  app.listen(env.APP_PORT, env.APP_HOST, () => {
+    // eslint-disable-next-line no-console
+    console.log(`3. Trello-api is running at http://${env.APP_HOST}:${env.APP_PORT}/`);
+  });
 
-app.get('/', (req, res) => {
-  // Test Absolute import mapOrder
-  console.log(
-    mapOrder(
-      [
-        { id: 'id-1', name: 'One' },
-        { id: 'id-2', name: 'Two' },
-        { id: 'id-3', name: 'Three' },
-        { id: 'id-4', name: 'Four' },
-        { id: 'id-5', name: 'Five' },
-      ],
-      ['id-5', 'id-4', 'id-2', 'id-3', 'id-1'],
-      'id'
-    )
-  );
-  res.end('<h1>Hello World!</h1><hr>');
-});
+  process.on('SIGINT', () => {
+    disconnectDB();
+    console.log('Disconnected Client Database');
+  });
+};
 
-app.listen(port, hostname, () => {
-  // eslint-disable-next-line no-console
-  console.log(`Trello-api running at http://${hostname}:${port}/`);
-});
+(async () => {
+  try {
+    console.log('1. start thread');
+    await connectDB();
+    console.log('2. Connect Database Successfully');
+
+    startServer();
+  } catch (error) {
+    console.error(error);
+    process.exit(0);
+  }
+})();

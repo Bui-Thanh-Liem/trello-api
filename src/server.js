@@ -1,18 +1,22 @@
 import express from 'express';
 
 //
-import { connectDB, getDB, disconnectDB } from '~/config/mongodb';
+import { connectDB, disconnectDB } from '~/config/mongodb';
 import { env } from '~/config/environment';
+import { APIs_V1 } from '~/routes/v1';
 
 const startServer = () => {
   const app = express();
-  app.get('/', async (req, res) => {
-    console.log(env.AUTHOR);
-    res.end('<h1>Hello World!</h1><hr>');
-  });
+
+  // use dùng khi đã định nghĩa nhiều phương thức bên trong rồi.
+  app.use('/v1', APIs_V1);
+
+  //
   app.listen(env.APP_PORT, env.APP_HOST, () => {
     // eslint-disable-next-line no-console
-    console.log(`3. Trello-api is running at http://${env.APP_HOST}:${env.APP_PORT}/`);
+    console.log(
+      `3. Trello-api is running on http://${env.APP_HOST}:${env.APP_PORT}/`
+    );
   });
 
   process.on('SIGINT', () => {

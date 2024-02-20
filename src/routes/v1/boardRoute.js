@@ -1,20 +1,18 @@
 import express from 'express';
 import { StatusCodes } from 'http-status-codes';
 
+//
+import { boardValidation } from '~/validations/boardValidation';
+
 const router = express.Router();
 
-router.route('/')
+router
+  .route('/')
   .get((req, res) => {
     res
       .status(StatusCodes.OK)
-      .json({ message: `GET: lay du lieu boards, code: ${StatusCodes.OK}` });
+      .json({ message: `GET: Get boards, code: ${StatusCodes.OK}` });
   })
-  .post((req, res) => {
-    res
-      .status(StatusCodes.CREATED)
-      .json({
-        message: `POST: tao boards, code: ${StatusCodes.CREATED}`,
-      });
-  });
+  .post(boardValidation.createNew);
 
 export const BOARD_ROUTE = router;

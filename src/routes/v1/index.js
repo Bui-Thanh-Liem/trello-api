@@ -15,7 +15,7 @@ router.get('/status', (req, res) => {
 });
 
 router.get('/', (req, res) => {
-  res.status(StatusCodes.OK).json({message: 'Home APIs V1'});
+  res.status(StatusCodes.OK).json({ message: 'Home APIs V1' });
 });
 
 router.use('/board', BOARD_ROUTE);

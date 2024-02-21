@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import Joi from 'joi';
 import { StatusCodes } from 'http-status-codes';
 
@@ -19,9 +20,9 @@ const createNew = async (req, res, next) => {
 
     await schema.validateAsync(req.body, { abortEarly: false });
 
-    res.status(StatusCodes.CREATED).json({
-      message: `POST: Create boards, code: ${StatusCodes.CREATED}`,
-    });
+    // res.status(StatusCodes.CREATED).json({
+    //   message: `POST: Create boards validations, code: ${StatusCodes.CREATED}`,
+    // });
 
     next();
   } catch (error) {

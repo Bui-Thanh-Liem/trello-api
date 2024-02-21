@@ -3,6 +3,7 @@ import { StatusCodes } from 'http-status-codes';
 
 //
 import { boardValidation } from '~/validations/boardValidation';
+import { boardController } from '~/controllers/boardController';
 
 const router = express.Router();
 
@@ -13,6 +14,6 @@ router
       .status(StatusCodes.OK)
       .json({ message: `GET: Get boards, code: ${StatusCodes.OK}` });
   })
-  .post(boardValidation.createNew);
+  .post(boardValidation.createNew, boardController.createNew);
 
 export const BOARD_ROUTE = router;

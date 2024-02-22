@@ -9,6 +9,9 @@ const createNew = async (req, res) => {
     res.status(StatusCodes.CREATED).json({
       message: `POST: Create boards controller, code: ${StatusCodes.CREATED}`,
     });
+    res
+      .status(StatusCodes.CREATED)
+      .render('<h1>Liem view</h1>', { html: true });
   } catch (error) {
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)

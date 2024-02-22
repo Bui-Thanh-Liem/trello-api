@@ -1,16 +1,16 @@
-/* eslint-disable no-console */
+// /* eslint-disable no-console */
 import Joi from 'joi';
 import { StatusCodes } from 'http-status-codes';
+
+import ApiError from '~/utils/ApiError';
 
 const createNew = async (req, res, next) => {
   const schema = Joi.object({
     title: Joi.string().required().min(3).max(50).trim().strict().messages({
-      'any.required': 'Bui Thanh Liem , required',
-      'string.empty': 'Bui Thanh Liem , empty',
-      'string.max':
-        '{{#label}} length must be less than or equal to {{#limit}} characters long , Bui Thanh Liem',
-      'string.min':
-        '{{#label}} length must be at least {{#limit}} characters long , Bui Thanh Liem',
+      'any.required': '{{#label}} is required - Customer',
+      'string.empty': '{{#label}} is not allowed empty - Customer',
+      'string.max': '{{#label}} length must be less than or equal to {{#limit}} characters long - Customer',
+      'string.min': '{{#label}} length must be at least {{#limit}} characters long - Customer',
     }),
     description: Joi.string().required().min(3).max(256).trim().strict(),
   });
@@ -26,10 +26,7 @@ const createNew = async (req, res, next) => {
 
     next();
   } catch (error) {
-    console.log(error);
-    res
-      .status(StatusCodes.UNPROCESSABLE_ENTITY)
-      .json({ error: new Error(error).message });
+    next(new ApiError(StatusCodes.UNPROCESSABLE_ENTITY, new Error(error).message));
   }
 };
 

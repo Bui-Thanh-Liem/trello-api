@@ -2,6 +2,7 @@ import express from 'express';
 
 //
 import { connectDB, disconnectDB } from '~/config/mongodb';
+import { errorHandlingMiddleware } from '~/middlewares/errorHandlingMiddleware';
 import { env } from '~/config/environment';
 import { APIs_V1 } from '~/routes/v1';
 
@@ -13,6 +14,9 @@ const startServer = () => {
 
   // use dùng khi đã định nghĩa nhiều phương thức bên trong rồi.
   app.use('/v1', APIs_V1);
+
+  // Xử lý lỗi tập trung
+  app.use(errorHandlingMiddleware);
 
   //
   app.listen(env.APP_PORT, env.APP_HOST, () => {

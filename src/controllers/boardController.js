@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import { StatusCodes } from 'http-status-codes';
 
-const createNew = async (req, res) => {
+const createNew = async (req, res, next) => {
   try {
     console.log('req.body', req.body);
     console.log('req.query', req.query);
@@ -10,9 +10,7 @@ const createNew = async (req, res) => {
       message: `POST: Create boards controller, code: ${StatusCodes.CREATED}`,
     });
   } catch (error) {
-    res
-      .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ error: error.message });
+    next(error);
   }
 };
 

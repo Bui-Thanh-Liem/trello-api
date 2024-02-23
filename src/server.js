@@ -15,7 +15,7 @@ const startServer = () => {
   // use dùng khi đã định nghĩa nhiều phương thức bên trong rồi.
   app.use('/v1', APIs_V1);
 
-  // Xử lý lỗi tập trung
+  // Xử lý lỗi tập trung (middleware).
   app.use(errorHandlingMiddleware);
 
   //

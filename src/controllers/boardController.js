@@ -11,8 +11,7 @@ const createNew = async (req, res, next) => {
 
     // Gọi tới services để xử lý dữ liệu
     const newBoard = await boardServices.createNew(req.body);
-
-    res.status(StatusCodes.CREATED).json({ created: newBoard });
+    res.status(StatusCodes.CREATED).json(newBoard);
   } catch (error) {
     next(error);
   }

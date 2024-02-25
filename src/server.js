@@ -9,7 +9,7 @@ import { APIs_V1 } from '~/routes/v1';
 const startServer = () => {
   const app = express();
 
-  //
+  // Middleware xủ lý dữ liệu Json, và đưa vào req.body
   app.use(express.json());
 
   // use dùng khi đã định nghĩa nhiều phương thức bên trong rồi.
@@ -21,9 +21,7 @@ const startServer = () => {
   //
   app.listen(env.APP_PORT, env.APP_HOST, () => {
     // eslint-disable-next-line no-console
-    console.log(
-      `3. Trello-api is running on http://${env.APP_HOST}:${env.APP_PORT}/v1`
-    );
+    console.log(`3. Trello-api is running on http://${env.APP_HOST}:${env.APP_PORT}/v1`);
   });
 
   process.on('SIGINT', () => {
@@ -37,10 +35,9 @@ const startServer = () => {
     console.log('1. start thread');
     await connectDB();
     console.log('2. Connect Database Successfully');
-
     startServer();
   } catch (error) {
     console.error(error);
-    process.exit(0);
+    process.exit(0); // Thoát khỏi quá trình thực thi của node
   }
 })();

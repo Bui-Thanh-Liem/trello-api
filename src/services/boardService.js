@@ -1,4 +1,5 @@
 import { StatusCodes } from 'http-status-codes';
+import { cloneDeep } from 'lodash';
 
 import { slugify } from '~/utils/formatters';
 import { boardModel } from '~/models/boardModel';
@@ -35,7 +36,14 @@ const getDetails = async (boardId) => {
     // Nếu không tìm thấy board thì trả về lỗi not found
     if (!board) throw new ApiError(StatusCodes.NOT_FOUND, 'Not Found a board');
 
-    return board;
+    // Chuyển đổi cấu trúc của data phù hợp với dự án fontEnd
+    const reponseBoard = cloneDeep(board);
+    reponseBoard.columns.forEach((column) => {
+      column.cards = reponseBoard.cards.filter((card) => card.columnId.equals(column._id));
+    });
+    delete reponseBoard.cards;
+
+    return reponseBoard;
   } catch (error) {
     throw new Error(error);
   }
@@ -43,5 +51,5 @@ const getDetails = async (boardId) => {
 
 export const boardServices = {
   createNew,
-  getDetails
+  getDetails,
 };

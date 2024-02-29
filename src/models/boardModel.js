@@ -1,7 +1,10 @@
-import Joi from 'joi';
+import Joi, { object } from 'joi';
 import { ObjectId } from 'mongodb';
 
 import { getDB } from '~/config/mongodb';
+import { BOARD_TYPES } from '~/utils/constants';
+import { columnModel } from '~/models/columnModel';
+import { cardModel } from '~/models/cardModel';
 
 // Define Collection (Name and Schema)
 const BOARD_COLLECTION_NAME = 'boards';
@@ -9,6 +12,9 @@ const BOARD_COLLECTION_SCHEMA = Joi.object({
   title: Joi.string().required().min(3).max(50).trim().strict(),
   slug: Joi.string().required().min(3).trim().strict(),
   description: Joi.string().required().min(3).max(50).trim().strict(),
+  type: Joi.string()
+    .valid(...Object.values(BOARD_TYPES))
+    .required(),
   columnOrderIds: Joi.array().items(Joi.string()).default([]),
   createdAt: Joi.date().timestamp('javascript').default(Date.now),
   updatedAt: Joi.date().timestamp('javascript').default(null),
@@ -49,8 +55,27 @@ const getDetails = async (boardId) => {
   try {
     const board = await getDB()
       .collection(BOARD_COLLECTION_NAME)
-      .findOne({ _id: ObjectId.createFromHexString(boardId) });
-    return board;
+      .aggregate([
+        { $match: { _id: ObjectId.createFromHexString(boardId), _destroy: false } },
+        {
+          $lookup: {
+            from: columnModel.COLUMN_COLLECTION_NAME,
+            localField: '_id',
+            foreignField: 'boardId',
+            as: 'columns',
+          },
+        },
+        {
+          $lookup: {
+            from: cardModel.CARD_COLLECTION_NAME,
+            localField: '_id',
+            foreignField: 'boardId',
+            as: 'cards',
+          },
+        },
+      ])
+      .toArray();
+    return board[0] || {};
   } catch (error) {
     throw new Error(error);
   }

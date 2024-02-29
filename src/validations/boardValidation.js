@@ -1,8 +1,9 @@
 /* eslint-disable no-console */
-import Joi from 'joi';
+import Joi, { object } from 'joi';
 import { StatusCodes } from 'http-status-codes';
 
 import ApiError from '~/utils/ApiError';
+import { BOARD_TYPES } from '~/utils/constants';
 
 const createNew = async (req, res, next) => {
   const schema = Joi.object({
@@ -13,6 +14,7 @@ const createNew = async (req, res, next) => {
       'string.min': '{{#label}} length must be at least {{#limit}} characters long - Customer',
     }),
     description: Joi.string().required().min(3).max(256).trim().strict(),
+    type: Joi.string().valid(...Object.values(BOARD_TYPES)).required(),
   });
 
   try {

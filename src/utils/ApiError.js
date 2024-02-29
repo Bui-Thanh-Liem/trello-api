@@ -1,5 +1,5 @@
 /**
- * Định nghĩa riêng một Class ApiError kế thừa class Error sẵn (điều này cần thiết và là Best Practice vì class Error nó là class built-in sẵn)
+ * Định nghĩa riêng một Class ApiError kế thừa class Error sẵn
  * Mục đích để biến đổi những lỗi chỉ hiển thị thông tin cơ bản của thư viện thứ 3 thành lỗi giống như Error
  */
 class ApiError extends Error {

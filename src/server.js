@@ -1,13 +1,18 @@
 import express from 'express';
+import cors from 'cors';
 
 //
 import { connectDB, disconnectDB } from '~/config/mongodb';
 import { errorHandlingMiddleware } from '~/middlewares/errorHandlingMiddleware';
 import { env } from '~/config/environment';
+import { corsOptions } from '~/config/cors';
 import { APIs_V1 } from '~/routes/v1';
 
 const startServer = () => {
   const app = express();
+
+  // Xử lý CORS
+  app.use(cors(corsOptions));
 
   // Middleware xủ lý dữ liệu Json, và đưa vào req.body
   app.use(express.json());

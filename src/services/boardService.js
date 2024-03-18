@@ -29,12 +29,15 @@ const createNew = async (bodyReq) => {
 };
 
 const getDetails = async (boardId) => {
+  // eslint-disable-next-line no-useless-catch
   try {
     //
     const board = await boardModel.getDetails(boardId);
 
     // Nếu không tìm thấy board thì trả về lỗi not found
-    if (!board) throw new ApiError(StatusCodes.NOT_FOUND, 'Not Found a board');
+    if (!board) {
+      throw new ApiError(StatusCodes.NOT_FOUND, 'Not Found a board');
+    }
 
     // Chuyển đổi cấu trúc của data phù hợp với dự án fontEnd
     const reponseBoard = cloneDeep(board);
@@ -45,7 +48,7 @@ const getDetails = async (boardId) => {
 
     return reponseBoard;
   } catch (error) {
-    throw new Error(error);
+    throw error;
   }
 };
 

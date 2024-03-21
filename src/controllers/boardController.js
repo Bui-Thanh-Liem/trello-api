@@ -1,16 +1,11 @@
-/* eslint-disable no-console */
 import { StatusCodes } from 'http-status-codes';
 
-import { boardServices } from '~/services/boardService';
+import { boardService } from '~/services/boardService';
 
 const createNew = async (req, res, next) => {
   try {
-    console.log('req.body', req.body);
-    console.log('req.query', req.query);
-    console.log('req.params', req.params);
-
     // Gọi tới services để xử lý dữ liệu
-    const newBoard = await boardServices.createNew(req.body);
+    const newBoard = await boardService.createNew(req.body);
     res.status(StatusCodes.CREATED).json(newBoard);
   } catch (error) {
     next(error);
@@ -19,11 +14,10 @@ const createNew = async (req, res, next) => {
 
 const getDetails = async (req, res, next) => {
   try {
-    console.log('req.params', req.params);
     const boardId = req.params.id;
 
     //
-    const board = await boardServices.getDetails(boardId);
+    const board = await boardService.getDetails(boardId);
 
     res.status(StatusCodes.OK).json(board);
   } catch (error) {

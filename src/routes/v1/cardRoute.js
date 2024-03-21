@@ -1,10 +1,12 @@
 import express from 'express';
-import { StatusCodes } from 'http-status-codes';
+
+import { cardValidation } from '~/validations/cardValidation';
+import { cardController } from '~/controllers/cardController';
 
 const router = express.Router();
 
-router.route('/').get((req, res) => {
-  res.status(StatusCodes.OK).json({ message: `GET: lay du lieu card, code: ${StatusCodes.OK}` });
-});
+router
+  .route('/')
+  .post(cardValidation.createCard, cardController.createCard);
 
 export const CARD_ROUTE = router;

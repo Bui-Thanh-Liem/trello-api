@@ -16,13 +16,13 @@ const createNew = async (bodyReq) => {
     const createdNewBoard = await boardModel.createNewBoard(boardNewData);
 
     // Tùy vào từng dụ án có hoặc không có
-    const newBoard = await boardModel.findOneById(
+    const getBoardNew = await boardModel.findOneById(
       typeof createdNewBoard.insertedId === 'string'
         ? createdNewBoard.insertedId
         : createdNewBoard.insertedId.toString()
     );
 
-    return newBoard;
+    return getBoardNew;
   } catch (error) {
     throw new Error(error);
   }
@@ -52,7 +52,7 @@ const getDetails = async (boardId) => {
   }
 };
 
-export const boardServices = {
+export const boardService = {
   createNew,
   getDetails,
 };

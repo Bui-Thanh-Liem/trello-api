@@ -10,6 +10,3 @@ export const slugify = (val) => {
     .replace(/-+/g, '-'); // Xóa 2 dấu gạch nối liên tiếp
 };
 
-const str = 'Bùi Thanh Liêm';
-const strFormatter = slugify(str); // Bui-Thanh_Liem
-

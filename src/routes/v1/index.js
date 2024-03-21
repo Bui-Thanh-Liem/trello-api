@@ -3,15 +3,14 @@ import { StatusCodes } from 'http-status-codes';
 
 //
 import { BOARD_ROUTE } from '~/routes/v1/boardRoute';
+import { COLUMN_ROUTE } from '~/routes/v1/columnRoute';
 import { CARD_ROUTE } from '~/routes/v1/cardRoute';
 
 // Tạo đối tượng router để gôm các routes có cùng tính chất chung (Version)
 const router = express.Router();
 
 router.get('/status', (req, res) => {
-  res
-    .status(StatusCodes.OK)
-    .json({ message: `Status app OK, status: ${StatusCodes.OK}` });
+  res.status(StatusCodes.OK).json({ message: `Status app OK, status: ${StatusCodes.OK}` });
 });
 
 router.get('/', (req, res) => {
@@ -19,6 +18,7 @@ router.get('/', (req, res) => {
 });
 
 router.use('/board', BOARD_ROUTE);
-router.use('/card', CARD_ROUTE);
+router.use('/columns', COLUMN_ROUTE);
+router.use('/cards', CARD_ROUTE);
 
 export const APIs_V1 = router;

@@ -1,4 +1,4 @@
-import Joi, { object } from 'joi';
+import Joi from 'joi';
 import { ObjectId } from 'mongodb';
 
 import { getDB } from '~/config/mongodb';
@@ -60,8 +60,8 @@ const getDetails = async (boardId) => {
         {
           $lookup: {
             from: columnModel.COLUMN_COLLECTION_NAME,
-            localField: '_id',
-            foreignField: 'boardId',
+            localField: '_id', // trên board
+            foreignField: 'boardId', // trên column
             as: 'columns',
           },
         },
@@ -81,10 +81,31 @@ const getDetails = async (boardId) => {
   }
 };
 
+// Update columnOrderIds
+const updateColumnOrderIds = async (column) => {
+  try {
+    const result = await getDB()
+      .collection(BOARD_COLLECTION_NAME)
+      .findOneAndUpdate(
+        {
+          _id: ObjectId.createFromHexString(
+            typeof column.boardId === 'string' ? column.boardId : column.boardId.toString()
+          ),
+        },
+        { $push: { columnOrderIds: column._id } },
+        { returnDocument: 'after' }
+      );
+    return result.value;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
 export const boardModel = {
   BOARD_COLLECTION_NAME,
   BOARD_COLLECTION_SCHEMA,
   createNewBoard,
   findOneById,
   getDetails,
+  updateColumnOrderIds,
 };

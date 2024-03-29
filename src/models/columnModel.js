@@ -20,6 +20,8 @@ const COLUMN_COLLECTION_SCHEMA = Joi.object({
   _destroy: Joi.boolean().default(false),
 });
 
+const INVALID_UPDATE_FIELDS = ['_id', 'boardId', 'createdAt'];
+
 // Validate
 const validateBeforeCreate = async (data) => {
   return await COLUMN_COLLECTION_SCHEMA.validateAsync(data, { abortEarly: true });
@@ -76,10 +78,38 @@ const updateCardOrderIds = async (card) => {
   }
 };
 
+const update = async (columnId, updateColumnData) => {
+  Object.keys(updateColumnData).forEach((key) => {
+    if (INVALID_UPDATE_FIELDS.includes(key)) {
+      delete updateColumnData[key];
+    }
+  });
+
+  try {
+    const updatedColumn = await getDB()
+      .collection(COLUMN_COLLECTION_NAME)
+      .findOneAndUpdate(
+        {
+          _id: ObjectId.createFromHexString(typeof columnId === 'string' ? columnId : columnId.toString()),
+        },
+        {
+          $set: updateColumnData,
+        },
+        {
+          returnDocument: 'after',
+        }
+      );
+    return updatedColumn;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
 export const columnModel = {
   COLUMN_COLLECTION_NAME,
   COLUMN_COLLECTION_SCHEMA,
   createNewColumn,
   findOneById,
   updateCardOrderIds,
+  update,
 };

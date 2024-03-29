@@ -14,8 +14,12 @@ const createColumn = async (reqBody) => {
         : createColumn.insertedId.toString()
     );
 
-    // Gọi hàm để cập nhật columnOrderIds trong board
-    await boardModel.updateColumnOrderIds(getColumnNew);
+    if (getColumnNew) {
+      getColumnNew.cards = [];
+
+      // Gọi hàm để cập nhật columnOrderIds trong board
+      await boardModel.updateColumnOrderIds(getColumnNew);
+    }
 
     return getColumnNew;
   } catch (error) {

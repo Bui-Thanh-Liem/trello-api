@@ -70,7 +70,7 @@ const updateCardOrderIds = async (card) => {
         { $push: { cardOrderIds: card._id } },
         { returnDocument: 'after' }
       );
-    return result.value;
+    return result;
   } catch (error) {
     throw new Error(error);
   }

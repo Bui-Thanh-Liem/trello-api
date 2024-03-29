@@ -5,6 +5,7 @@ import { getDB } from '~/config/mongodb';
 import { BOARD_TYPES } from '~/utils/constants';
 import { columnModel } from '~/models/columnModel';
 import { cardModel } from '~/models/cardModel';
+import { OBJECT_ID_RULE, OBJECT_ID_RULE_MESSAGE } from '~/utils/validators';
 
 // Define Collection (Name and Schema)
 const BOARD_COLLECTION_NAME = 'boards';
@@ -15,11 +16,15 @@ const BOARD_COLLECTION_SCHEMA = Joi.object({
   type: Joi.string()
     .valid(...Object.values(BOARD_TYPES))
     .required(),
-  columnOrderIds: Joi.array().items(Joi.string()).default([]),
+  columnOrderIds: Joi.array()
+    .items(Joi.string().pattern(OBJECT_ID_RULE).message(OBJECT_ID_RULE_MESSAGE))
+    .default([]),
   createdAt: Joi.date().timestamp('javascript').default(Date.now),
   updatedAt: Joi.date().timestamp('javascript').default(null),
   _destroy: Joi.boolean().default(false),
 });
+
+const INVALID_UPDATE_FIELDS = ['_id', 'createdAt'];
 
 // Validations (phòng khi services trả xuống model dữ liệu không đúng, gán thêm các giá trị mặc định cho collection)
 const validateBeforeCreate = async (data) => {
@@ -101,6 +106,30 @@ const updateColumnOrderIds = async (column) => {
   }
 };
 
+const update = async (boardId, newBoardUpdateData) => {
+  // Không cho phép cập nhật những fields không được phép cập nhật
+  Object.keys(newBoardUpdateData).forEach((key) => {
+    if (INVALID_UPDATE_FIELDS.includes(key)) {
+      delete newBoardUpdateData[key];
+    }
+  });
+
+  try {
+    const result = await getDB()
+      .collection(BOARD_COLLECTION_NAME)
+      .findOneAndUpdate(
+        {
+          _id: ObjectId.createFromHexString(typeof boardId === 'string' ? boardId : boardId.toString()),
+        },
+        { $set: newBoardUpdateData },
+        { returnDocument: 'after' }
+      );
+    return result;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
 export const boardModel = {
   BOARD_COLLECTION_NAME,
   BOARD_COLLECTION_SCHEMA,
@@ -108,4 +137,5 @@ export const boardModel = {
   findOneById,
   getDetails,
   updateColumnOrderIds,
+  update,
 };

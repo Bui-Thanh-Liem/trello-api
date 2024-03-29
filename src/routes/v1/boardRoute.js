@@ -13,6 +13,6 @@ router
 router
   .route('/:id')
   .get(boardController.getDetails)
-  .put();
+  .put(boardValidation.update, boardController.update);
 
 export const BOARD_ROUTE = router;

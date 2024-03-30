@@ -8,11 +8,7 @@ const createCard = async (reqBody) => {
     };
 
     const createCard = await cardModel.createCard(cardNewData);
-    const getCardNew = await cardModel.findOneById(
-      typeof createCard.insertedId === 'string'
-        ? createCard.insertedId
-        : createCard.insertedId.toString()
-    );
+    const getCardNew = await cardModel.findOneById(createCard.insertedId);
 
     // Update cardOrderIds trong Column
     await columnModel.updateCardOrderIds(getCardNew);

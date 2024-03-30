@@ -49,6 +49,7 @@ const createNewColumn = async (data) => {
 
 // Find a column by _id
 const findOneById = async (id) => {
+  id = id.toString();
   try {
     const column = await getDB()
       .collection(COLUMN_COLLECTION_NAME)
@@ -65,9 +66,7 @@ const updateCardOrderIds = async (card) => {
       .collection(COLUMN_COLLECTION_NAME)
       .findOneAndUpdate(
         {
-          _id: ObjectId.createFromHexString(
-            typeof card.columnId === 'string' ? card.columnId : card.columnId.toString()
-          ),
+          _id: card.columnId,
         },
         { $push: { cardOrderIds: card._id } },
         { returnDocument: 'after' }
@@ -85,20 +84,25 @@ const update = async (columnId, updateColumnData) => {
     }
   });
 
+  // Đổi tất cả các gía trị liên quan ObjectId sang ObjectId
+  if (updateColumnData.cardOrderIds) {
+    updateColumnData.cardOrderIds = updateColumnData.cardOrderIds.map((_id) =>
+      ObjectId.createFromHexString(_id)
+    );
+  }
+
   try {
-    const updatedColumn = await getDB()
-      .collection(COLUMN_COLLECTION_NAME)
-      .findOneAndUpdate(
-        {
-          _id: ObjectId.createFromHexString(typeof columnId === 'string' ? columnId : columnId.toString()),
-        },
-        {
-          $set: updateColumnData,
-        },
-        {
-          returnDocument: 'after',
-        }
-      );
+    const updatedColumn = await getDB().collection(COLUMN_COLLECTION_NAME).findOneAndUpdate(
+      {
+        _id: ObjectId.createFromHexString(columnId),
+      },
+      {
+        $set: updateColumnData,
+      },
+      {
+        returnDocument: 'after',
+      }
+    );
     return updatedColumn;
   } catch (error) {
     throw new Error(error);

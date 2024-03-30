@@ -93,9 +93,7 @@ const updateColumnOrderIds = async (column) => {
       .collection(BOARD_COLLECTION_NAME)
       .findOneAndUpdate(
         {
-          _id: ObjectId.createFromHexString(
-            typeof column.boardId === 'string' ? column.boardId : column.boardId.toString()
-          ),
+          _id: column.boardId,
         },
         { $push: { columnOrderIds: column._id } },
         { returnDocument: 'after' }
@@ -114,12 +112,19 @@ const update = async (boardId, newBoardUpdateData) => {
     }
   });
 
+  // Đổi tất cả các gía trị liên quan ObjectId sang ObjectId
+  if (newBoardUpdateData.columnOrderIds) {
+    newBoardUpdateData.columnOrderIds = newBoardUpdateData.columnOrderIds.map((_id) =>
+      ObjectId.createFromHexString(_id)
+    );
+  }
+
   try {
     const result = await getDB()
       .collection(BOARD_COLLECTION_NAME)
       .findOneAndUpdate(
         {
-          _id: ObjectId.createFromHexString(typeof boardId === 'string' ? boardId : boardId.toString()),
+          _id: ObjectId.createFromHexString(boardId),
         },
         { $set: newBoardUpdateData },
         { returnDocument: 'after' }

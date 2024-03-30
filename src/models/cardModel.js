@@ -18,6 +18,8 @@ const CARD_COLLECTION_SCHEMA = Joi.object({
   _destroy: Joi.boolean().default(false),
 });
 
+const INVALID_UPDATE_FIELDS = ['_id', 'boardId', 'createdAt'];
+
 // Validate
 const validateBeforeCreate = async (data) => {
   return await CARD_COLLECTION_SCHEMA.validateAsync(data, { abortEarlyUpdate: false });
@@ -41,6 +43,7 @@ const createCard = async (data) => {
 
 // find a card by _id
 const findOneById = async (id) => {
+  id = id.toString();
   try {
     const card = await getDB()
       .collection(CARD_COLLECTION_NAME)
@@ -51,9 +54,34 @@ const findOneById = async (id) => {
   }
 };
 
+const update = async (cardId, updateData) => {
+  Object.keys(updateData).forEach((key) => {
+    if (INVALID_UPDATE_FIELDS.includes(key)) {
+      delete updateData[key];
+    }
+  });
+
+  // Đổi tất cả các gía trị liên quan ObjectId sang ObjectId
+  if (updateData.columnId) updateData.columnId = ObjectId.createFromHexString(updateData.columnId);
+
+  try {
+    const updatedCard = await getDB()
+      .collection(CARD_COLLECTION_NAME)
+      .findOneAndUpdate(
+        { _id: ObjectId.createFromHexString(cardId) },
+        { $set: updateData },
+        { returnDocument: 'after' }
+      );
+    return updatedCard;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
 export const cardModel = {
   CARD_COLLECTION_NAME,
   CARD_COLLECTION_SCHEMA,
   createCard,
+  update,
   findOneById,
 };

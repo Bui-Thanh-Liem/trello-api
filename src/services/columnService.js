@@ -1,5 +1,6 @@
 import { columnModel } from '~/models/columnModel';
 import { boardModel } from '~/models/boardModel';
+import { ObjectId } from 'mongodb';
 
 const createColumn = async (reqBody) => {
   try {
@@ -8,11 +9,7 @@ const createColumn = async (reqBody) => {
     };
 
     const createColumn = await columnModel.createNewColumn(columnNewData);
-    const getColumnNew = await columnModel.findOneById(
-      typeof createColumn.insertedId === 'string'
-        ? createColumn.insertedId
-        : createColumn.insertedId.toString()
-    );
+    const getColumnNew = await columnModel.findOneById(createColumn.insertedId);
 
     if (getColumnNew) {
       getColumnNew.cards = [];
@@ -29,10 +26,9 @@ const createColumn = async (reqBody) => {
 
 const update = async (columnId, reqBody) => {
   try {
-
     const updateColumnData = {
       ...reqBody,
-      updatedAt: Date.now()
+      updatedAt: Date.now(),
     };
 
     const updatedColumn = await columnModel.update(columnId, updateColumnData);
@@ -45,5 +41,5 @@ const update = async (columnId, reqBody) => {
 
 export const columnService = {
   createColumn,
-  update
+  update,
 };

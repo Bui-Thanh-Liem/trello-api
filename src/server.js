@@ -27,7 +27,7 @@ const startServer = () => {
   // Tùy từng môi trường
   if (env.BUILD_MODE === 'production') {
     app.listen(process.env.PORT, () => {
-      console.log(`3. Trello-api is running on Port: ${env.APP_PORT}`);
+      console.log(`3. Trello-api is running on Port: ${process.env.PORT}`);
     });
   } else {
     app.listen(env.LOCAL_DEV_APP_PORT, env.LOCAL_DEV_APP_HOST, () => {

@@ -24,7 +24,7 @@ const startServer = () => {
   // Xử lý lỗi tập trung (middleware).
   app.use(errorHandlingMiddleware);
 
-  // Tùy từng môi trường
+  // Tùy từng môi trường (production thì tự động tạo cho 1 PORT và chỉ listen PORT)
   if (env.BUILD_MODE === 'production') {
     app.listen(process.env.PORT, () => {
       console.log(`3. Trello-api is running on Port: ${process.env.PORT}`);

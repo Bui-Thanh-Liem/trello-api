@@ -92,18 +92,31 @@ const update = async (columnId, updateColumnData) => {
   }
 
   try {
-    const updatedColumn = await getDB().collection(COLUMN_COLLECTION_NAME).findOneAndUpdate(
-      {
-        _id: ObjectId.createFromHexString(columnId),
-      },
-      {
-        $set: updateColumnData,
-      },
-      {
-        returnDocument: 'after',
-      }
-    );
+    const updatedColumn = await getDB()
+      .collection(COLUMN_COLLECTION_NAME)
+      .findOneAndUpdate(
+        {
+          _id: ObjectId.createFromHexString(columnId),
+        },
+        {
+          $set: updateColumnData,
+        },
+        {
+          returnDocument: 'after',
+        }
+      );
     return updatedColumn;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
+const deleteOneById = async (columnId) => {
+  try {
+    const result = await getDB()
+      .collection(COLUMN_COLLECTION_NAME)
+      .deleteOne({ _id: ObjectId.createFromHexString(columnId) });
+    return result;
   } catch (error) {
     throw new Error(error);
   }
@@ -116,4 +129,5 @@ export const columnModel = {
   findOneById,
   updateCardOrderIds,
   update,
+  deleteOneById,
 };

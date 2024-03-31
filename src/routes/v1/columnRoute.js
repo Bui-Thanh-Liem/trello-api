@@ -6,6 +6,9 @@ import { columnController } from '~/controllers/columnController';
 const router = express.Router();
 
 router.route('/').post(columnValidation.createNewColumn, columnController.createColumn);
-router.route('/:id').put(columnValidation.update, columnController.update);
+router
+  .route('/:id')
+  .put(columnValidation.update, columnController.update)
+  .delete(columnValidation.deleteColumn, columnController.deleteColumn);
 
 export const COLUMN_ROUTE = router;

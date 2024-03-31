@@ -1,6 +1,9 @@
-import { columnModel } from '~/models/columnModel';
 import { boardModel } from '~/models/boardModel';
-import { ObjectId } from 'mongodb';
+import { columnModel } from '~/models/columnModel';
+import { cardModel } from '~/models/cardModel';
+import ApiError from '~/utils/ApiError';
+import { StatusCodes } from 'http-status-codes';
+
 
 const createColumn = async (reqBody) => {
   try {
@@ -15,7 +18,7 @@ const createColumn = async (reqBody) => {
       getColumnNew.cards = [];
 
       // Gọi hàm để cập nhật columnOrderIds trong board
-      await boardModel.updateColumnOrderIds(getColumnNew);
+      await boardModel.pushColumnOrderIds(getColumnNew);
     }
 
     return getColumnNew;
@@ -39,7 +42,32 @@ const update = async (columnId, reqBody) => {
   }
 };
 
+const deleteColumn = async (columnId) => {
+  try {
+    // Find column by id
+    const targetColumn = await columnModel.findOneById(columnId);
+
+    if (!targetColumn) {
+      throw new ApiError(StatusCodes.NOT_FOUND, 'Not Found a board');
+    }
+
+    // Delete the column
+    await columnModel.deleteOneById(columnId);
+
+    // Delete card have columnId
+    await cardModel.deleteCardsByColumnId(columnId);
+
+    // Update columnOrderIds
+    await boardModel.pullColumnOrderIds(targetColumn);
+
+    return { resultMessage: 'column deleted successfully!' };
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
 export const columnService = {
   createColumn,
   update,
+  deleteColumn,
 };

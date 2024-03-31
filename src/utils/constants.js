@@ -4,7 +4,7 @@ export const WHITELIST_DOMAINS = [
   // 'http://localhost:5173',
 
   // Sau này các domain deploy ghi vào đây
-  'http://trello-web-psi.vercel.app'
+  'https://trello-web-psi.vercel.app'
 ];
 
 //
